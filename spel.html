@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Mini-Pacman</title>
+  <style>
+    canvas {
+      background-color: black;
+      display: block;
+      margin: 0 auto;
+    }
+  </style>
+</head>
+<body>
+<canvas id="gameCanvas" width="500" height="500"></canvas>
+
+<script>
+  const canvas = document.getElementById("gameCanvas");
+  const ctx = canvas.getContext("2d");
+
+  let pacman = {
+    x: 250,
+    y: 250,
+    radius: 25,
+    angle: 0.2,
+    speed: 3,
+    dx: 0,
+    dy: 0,
+    direction: "right"
+  };
+
+  document.addEventListener("keydown", (e) => {
+    switch (e.key) {
+      case "ArrowUp":
+        pacman.dx = 0;
+        pacman.dy = -pacman.speed;
+        pacman.direction = "up";
+        break;
+      case "ArrowDown":
+        pacman.dx = 0;
+        pacman.dy = pacman.speed;
+        pacman.direction = "down";
+        break;
+      case "ArrowLeft":
+        pacman.dx = -pacman.speed;
+        pacman.dy = 0;
+        pacman.direction = "left";
+        break;
+      case "ArrowRight":
+        pacman.dx = pacman.speed;
+        pacman.dy = 0;
+        pacman.direction = "right";
+        break;
+    }
+  });
+
+  function drawPacman() {
+    const mouthAngle = Math.sin(Date.now() / 100) * 0.2; // Tugga-effekt
+    let startAngle = 0.2 + mouthAngle;
+    let endAngle = Math.PI * 2 - 0.2 - mouthAngle;
+
+    // Rotera beroende på riktning
+    let rotation = {
+      right: 0,
+      down: Math.PI / 2,
+      left: Math.PI,
+      up: -Math.PI / 2
+    }[pacman.direction];
+
+    ctx.save();
+    ctx.translate(pacman.x, pacman.y);
+    ctx.rotate(rotation);
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.arc(0, 0, pacman.radius, startAngle, endAngle);
+    ctx.fillStyle = "yellow";
+    ctx.fill();
+    ctx.restore();
+  }
+
+  function update() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Uppdatera position
+    pacman.x += pacman.dx;
+    pacman.y += pacman.dy;
+
+    // Väggkollisioner
+    if (pacman.x - pacman.radius < 0) pacman.x = pacman.radius;
+    if (pacman.x + pacman.radius > canvas.width) pacman.x = canvas.width - pacman.radius;
+    if (pacman.y - pacman.radius < 0) pacman.y = pacman.radius;
+    if (pacman.y + pacman.radius > canvas.height) pacman.y = canvas.height - pacman.radius;
+
+    drawPacman();
+    requestAnimationFrame(update);
+  }
+
+  update();
+</script>
+</body>
+</html>
