@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Mini-Pacman</title>
+  <title>Pac-man</title>
   <style>
     html, body {
       margin: 0;
@@ -28,19 +28,35 @@
     canvas.height = window.innerHeight;
   }
 
-  window.addEventListener("resize", resizeCanvas);
+  window.addEventListener("resize", () => {
+    resizeCanvas();
+  
+    pacman.x = canvas.width / 2;
+    pacman.y = canvas.height / 2;
+  });
+
   resizeCanvas();
 
   let pacman = {
     x: canvas.width / 2,
     y: canvas.height / 2,
     radius: 25,
-    angle: 0.2,
     speed: 3,
     dx: 0,
     dy: 0,
     direction: "right"
   };
+
+  let ghost = spawnGhost();
+
+  function spawnGhost() {
+    return {
+      x: Math.random() * (canvas.width - 50) + 25,
+      y: Math.random() * (canvas.height - 50) + 25,
+      radius: 20,
+      color: "red"
+    };
+  }
 
   document.addEventListener("keydown", (e) => {
     switch (e.key) {
@@ -90,18 +106,42 @@
     ctx.restore();
   }
 
+  function drawGhost(ghost) {
+    ctx.beginPath();
+    ctx.arc(ghost.x, ghost.y, ghost.radius, 0, Math.PI * 2);
+    ctx.fillStyle = ghost.color;
+    ctx.fill();
+  }
+
+  function checkCollision(p1, p2) {
+    let dx = p1.x - p2.x;
+    let dy = p1.y - p2.y;
+    let distance = Math.sqrt(dx * dx + dy * dy);
+    return distance < p1.radius + p2.radius;
+  }
+
   function update() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     pacman.x += pacman.dx;
     pacman.y += pacman.dy;
 
+    // Väggkollision
     if (pacman.x - pacman.radius < 0) pacman.x = pacman.radius;
     if (pacman.x + pacman.radius > canvas.width) pacman.x = canvas.width - pacman.radius;
     if (pacman.y - pacman.radius < 0) pacman.y = pacman.radius;
     if (pacman.y + pacman.radius > canvas.height) pacman.y = canvas.height - pacman.radius;
 
     drawPacman();
+
+    if (ghost) {
+      drawGhost(ghost);
+
+      if (checkCollision(pacman, ghost)) {
+        ghost = spawnGhost(); // Ät upp och spawna ny
+      }
+    }
+
     requestAnimationFrame(update);
   }
 
