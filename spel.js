@@ -122,13 +122,42 @@ function update() {
 
   drawMap();
 
-  pacman.x += pacman.dx;
-  pacman.y += pacman.dy;
+function isWallAt(x, y) {
+  const col = Math.floor((x - mapOffsetX) / tileSize);
+  const row = Math.floor((y - mapOffsetY) / tileSize);
+  
+  if (row < 0 || row >= map.length || col < 0 || col >= map[0].length) return true;
+  
+  return map[row][col] === 1;
+}
 
-  if (pacman.x + pacman.radius < 0) pacman.x = canvas.width + pacman.radius;
-  if (pacman.x - pacman.radius > canvas.width) pacman.x = -pacman.radius;
-  if (pacman.y + pacman.radius < 0) pacman.y = canvas.height + pacman.radius;
-  if (pacman.y - pacman.radius > canvas.height) pacman.y = -pacman.radius;
+let nextX = pacman.x + pacman.dx;
+let nextY = pacman.y + pacman.dy;
+
+if (nextX - pacman.radius < mapOffsetX) {
+  nextX = mapOffsetX + mapCols * tileSize - pacman.radius;
+}
+if (nextX + pacman.radius > mapOffsetX + mapCols * tileSize) {
+  nextX = mapOffsetX + pacman.radius;
+}
+
+if (!isWallAt(nextX, pacman.y)) {
+  pacman.x = nextX;
+} else {
+  pacman.dx = 0;
+}
+
+if (!isWallAt(pacman.x, nextY)) {
+  pacman.y = nextY;
+} else {
+  pacman.dy = 0;
+}
+
+
+if (pacman.x + pacman.radius < 0) pacman.x = canvas.width + pacman.radius;
+if (pacman.x - pacman.radius > canvas.width) pacman.x = -pacman.radius;
+if (pacman.y + pacman.radius < 0) pacman.y = canvas.height + pacman.radius;
+if (pacman.y - pacman.radius > canvas.height) pacman.y = -pacman.radius;
 
   drawPacman();
 
