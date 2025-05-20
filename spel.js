@@ -117,11 +117,6 @@ function drawMap() {
   }
 }
 
-function update() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-  drawMap();
-
 function isWallAt(x, y) {
   const col = Math.floor((x - mapOffsetX) / tileSize);
   const row = Math.floor((y - mapOffsetY) / tileSize);
@@ -131,36 +126,57 @@ function isWallAt(x, y) {
   return map[row][col] === 1;
 }
 
-let nextX = pacman.x + pacman.dx;
-let nextY = pacman.y + pacman.dy;
+function checkCollision(x, y) {
 
-if (nextX - pacman.radius < mapOffsetX) {
-  nextX = mapOffsetX + mapCols * tileSize - pacman.radius;
-}
-if (nextX + pacman.radius > mapOffsetX + mapCols * tileSize) {
-  nextX = mapOffsetX + pacman.radius;
-}
+  const points = [
+    {x: x - pacman.radius + 1, y: y - pacman.radius + 1}, 
+    {x: x + pacman.radius - 1, y: y - pacman.radius + 1}, 
+    {x: x - pacman.radius + 1, y: y + pacman.radius - 1}, 
+    {x: x + pacman.radius - 1, y: y + pacman.radius - 1},
+    {x: x, y: y} 
+  ];
 
-if (!isWallAt(nextX, pacman.y)) {
-  pacman.x = nextX;
-} else {
-  pacman.dx = 0;
+  return points.some(point => isWallAt(point.x, point.y));
 }
 
-if (!isWallAt(pacman.x, nextY)) {
-  pacman.y = nextY;
-} else {
-  pacman.dy = 0;
-}
+function update() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  drawMap();
+
+  let nextX = pacman.x + pacman.dx;
+  let nextY = pacman.y + pacman.dy;
+
+ 
+  if (pacman.dx !== 0) {
+    if (!checkCollision(nextX, pacman.y)) {
+      pacman.x = nextX;
+    } else {
+
+      if (pacman.dx > 0) {
+        pacman.x = Math.floor((nextX + pacman.radius - mapOffsetX) / tileSize) * tileSize + mapOffsetX - pacman.radius - 1;
+      } else {
+        pacman.x = Math.ceil((nextX - pacman.radius - mapOffsetX) / tileSize) * tileSize + mapOffsetX + pacman.radius + 1;
+      }
+      pacman.dx = 0;
+    }
+  }
 
 
-if (pacman.x + pacman.radius < 0) pacman.x = canvas.width + pacman.radius;
-if (pacman.x - pacman.radius > canvas.width) pacman.x = -pacman.radius;
-if (pacman.y + pacman.radius < 0) pacman.y = canvas.height + pacman.radius;
-if (pacman.y - pacman.radius > canvas.height) pacman.y = -pacman.radius;
+  if (pacman.dy !== 0) {
+    if (!checkCollision(pacman.x, nextY)) {
+      pacman.y = nextY;
+    } else {
+     
+      if (pacman.dy > 0) {
+        pacman.y = Math.floor((nextY + pacman.radius - mapOffsetY) / tileSize) * tileSize + mapOffsetY - pacman.radius - 1;
+      } else {
+        pacman.y = Math.ceil((nextY - pacman.radius - mapOffsetY) / tileSize) * tileSize + mapOffsetY + pacman.radius + 1;
+      }
+      pacman.dy = 0;
+    }
+  }
 
   drawPacman();
-
   requestAnimationFrame(update);
 }
 
