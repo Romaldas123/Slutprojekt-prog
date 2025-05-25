@@ -2,7 +2,7 @@ let pacman = {
     x: 0,
     y: 0,
     radius: 20,
-    speed: 3.5,
+    speed: 2.5,
     dx: 0,
     dy: 0,
     direction: "right",
@@ -26,10 +26,10 @@ function getVectorForDirection(direction) {
 
 function drawPacman() {
     const mouthAngle = Math.sin(Date.now() / 100) * 0.2;
-    let startAngle = 0.2 + mouthAngle;
-    let endAngle = Math.PI * 2 - 0.2 - mouthAngle;
+    const startAngle = 0.2 + mouthAngle;
+    const endAngle = Math.PI * 2 - 0.2 - mouthAngle;
 
-    let rotation = {
+    const rotation = {
         right: 0,
         down: Math.PI / 2,
         left: Math.PI,

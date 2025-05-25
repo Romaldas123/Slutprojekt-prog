@@ -1,4 +1,3 @@
-
 function isWallAt(x, y) {
     let col = Math.floor((x - mapOffsetX) / tileSize);
     let row = Math.floor((y - mapOffsetY) / tileSize);
@@ -15,11 +14,11 @@ function isWallAt(x, y) {
 
 function checkCollision(x, y) {
     const points = [
-        { x: x - pacman.radius + 1, y: y - pacman.radius + 1 }, 
-        { x: x + pacman.radius - 1, y: y - pacman.radius + 1 }, 
-        { x: x - pacman.radius + 1, y: y + pacman.radius - 1 }, 
+        { x: x - pacman.radius + 1, y: y - pacman.radius + 1 },
+        { x: x + pacman.radius - 1, y: y - pacman.radius + 1 },
+        { x: x - pacman.radius + 1, y: y + pacman.radius - 1 },
         { x: x + pacman.radius - 1, y: y + pacman.radius - 1 },
-        { x: x, y: y } 
+        { x: x, y: y }
     ];
     return points.some(point => isWallAt(point.x, point.y));
 }

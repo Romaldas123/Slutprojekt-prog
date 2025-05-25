@@ -1,12 +1,14 @@
 function update() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
     drawMap();
+    drawPellets();
     
     tryChangeDirection();
-
+    
     let nextX = pacman.x + pacman.dx;
     let nextY = pacman.y + pacman.dy;
-
+    
     if (pacman.dx !== 0) {
         if (!checkCollision(nextX, pacman.y)) {
             pacman.x = nextX;
@@ -19,16 +21,15 @@ function update() {
             pacman.dx = 0;
         }
     }
-
+    
     if (pacman.y - mapOffsetY >= tileSize * 6 && pacman.y - mapOffsetY <= tileSize * 7) {
         if (pacman.x - mapOffsetX > mapCols * tileSize) {
             pacman.x = mapOffsetX + pacman.radius;
-        }
-        else if (pacman.x - mapOffsetX < 0) {
+        } else if (pacman.x - mapOffsetX < 0) {
             pacman.x = mapOffsetX + (mapCols * tileSize) - pacman.radius;
         }
     }
-
+    
     if (pacman.dy !== 0) {
         if (!checkCollision(pacman.x, nextY)) {
             pacman.y = nextY;
@@ -41,7 +42,9 @@ function update() {
             pacman.dy = 0;
         }
     }
-
+    
+    eatPelletIfPossible();
+    
     drawPacman();
     requestAnimationFrame(update);
 }
