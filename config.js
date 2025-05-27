@@ -15,8 +15,23 @@ function calculateMapOffset() {
 }
 
 function spawnPacman() {
-    pacman.x = mapOffsetX + (mapCols * tileSize) / 2;
-    pacman.y = mapOffsetY + (mapRows * tileSize) / 2;
+    // Find cell with value 4
+    let found = false;
+    for (let row = 0; row < mapRows; row++) {
+        for (let col = 0; col < mapCols; col++) {
+            if (map[row][col] === 4) {
+                pacman.x = mapOffsetX + col * tileSize + tileSize / 2;
+                pacman.y = mapOffsetY + row * tileSize + tileSize / 2;
+                found = true;
+                break;
+            }
+        }
+        if (found) break;
+    }
+    if (!found) {
+        pacman.x = mapOffsetX + (mapCols * tileSize) / 2;
+        pacman.y = mapOffsetY + (mapRows * tileSize) / 2;
+    }
 }
 
 function resizeCanvas() {

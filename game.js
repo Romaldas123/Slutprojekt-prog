@@ -1,14 +1,14 @@
 function update() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
+
     drawMap();
     drawPellets();
-    
+
     tryChangeDirection();
-    
+
     let nextX = pacman.x + pacman.dx;
     let nextY = pacman.y + pacman.dy;
-    
+
     if (pacman.dx !== 0) {
         if (!checkCollision(nextX, pacman.y)) {
             pacman.x = nextX;
@@ -21,7 +21,7 @@ function update() {
             pacman.dx = 0;
         }
     }
-    
+
     if (pacman.y - mapOffsetY >= tileSize * 6 && pacman.y - mapOffsetY <= tileSize * 7) {
         if (pacman.x - mapOffsetX > mapCols * tileSize) {
             pacman.x = mapOffsetX + pacman.radius;
@@ -29,7 +29,7 @@ function update() {
             pacman.x = mapOffsetX + (mapCols * tileSize) - pacman.radius;
         }
     }
-    
+
     if (pacman.dy !== 0) {
         if (!checkCollision(pacman.x, nextY)) {
             pacman.y = nextY;
@@ -42,12 +42,18 @@ function update() {
             pacman.dy = 0;
         }
     }
-    
+
     eatPelletIfPossible();
-    
     drawPacman();
+
+    updateGhosts();
+    for (const ghost of ghosts) {
+        drawGhost(ghost);
+    }
+
     requestAnimationFrame(update);
 }
 
 resizeCanvas();
+spawnGhosts();
 update();
