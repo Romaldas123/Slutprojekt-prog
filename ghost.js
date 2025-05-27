@@ -24,7 +24,7 @@ const ghosts = [
     x: 0, y: 0,
     startX: 0, startY: 0, 
     dx: 0, dy: 0,
-    speed: 3.3,
+    speed: 3.5,
     direction: "up"
 }
 ];
