@@ -2,7 +2,7 @@ let pacman = {
     x: 0,
     y: 0,
     radius: 20,
-    speed: 2.5,
+    speed: 3,
     dx: 0,
     dy: 0,
     direction: "right",

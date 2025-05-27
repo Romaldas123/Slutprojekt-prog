@@ -15,7 +15,6 @@ function calculateMapOffset() {
 }
 
 function spawnPacman() {
-    // Find cell with value 4
     let found = false;
     for (let row = 0; row < mapRows; row++) {
         for (let col = 0; col < mapCols; col++) {

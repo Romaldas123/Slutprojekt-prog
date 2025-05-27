@@ -1,4 +1,5 @@
 let gameRunning = true;
+let totalPellets = 0;
 
 function update() {
     if (!gameRunning) return;
@@ -55,13 +56,11 @@ function update() {
         drawGhost(ghost);
     }
 
-    // Check for collision with ghosts
     if (checkPacmanGhostCollision()) return;
 
     requestAnimationFrame(update);
 }
 
-// Detects collision between Pac-Man and ghosts
 function checkPacmanGhostCollision() {
     for (const ghost of ghosts) {
         const dx = pacman.x - ghost.x;
@@ -75,51 +74,88 @@ function checkPacmanGhostCollision() {
     return false;
 }
 
-// Ends the game and shows the restart button
+
 function gameOver() {
     gameRunning = false;
     document.getElementById("restartButton").style.display = "block";
 }
 
-// Resets the game state and restarts the loop
 function restartGame() {
-    // Reset Pac-Man to starting position
     spawnPacman();
-    pacman.dx = -1;
-    pacman.dy = 0;
-    pacman.direction = "left";
+    pacman.dx = 0; 
+    pacman.dy = 0; 
+    pacman.speed = 3; 
+    pacman.direction = "right"; 
     pacman.requestedDirection = null;
-    pacman.speed = 2.5;
 
-    // Clear boost if active
+    const vector = getVectorForDirection(pacman.direction);
+    pacman.dx = vector.dx;
+    pacman.dy = vector.dy;
+
     if (pacman.boostTimeout) {
         clearTimeout(pacman.boostTimeout);
         pacman.boostTimeout = null;
     }
 
-    // Reset ghosts
     for (const g of ghosts) {
         g.x = g.startX;
         g.y = g.startY;
     }
 
-    // Reinitialize pellets
     initializePellets();
+    totalPellets = countTotalPellets(); 
 
-    // Optional: Recalculate map offset if window resizes
     calculateMapOffset();
 
-    // Restart the game
     gameRunning = true;
     document.getElementById("restartButton").style.display = "none";
 
     update();
 }
 
-// Start the game
+function findPacmanStartingPosition() {
+    for (let row = 0; row < mapRows; row++) {
+        for (let col = 0; col < mapCols; col++) {
+            if (map[row][col] === 4) {
+                return { row, col };
+            }
+        }
+    }
+    return null; 
+}
+
+function countTotalPellets() {
+    let count = 0;
+    for (let row = 0; row < mapRows; row++) {
+        for (let col = 0; col < mapCols; col++) {
+            if (pellets[row][col] !== false) {
+                count++;
+            }
+        }
+    }
+    return count;
+}
+
+function checkWinCondition() {
+    if (totalPellets <= 0) {
+        gameRunning = false;
+        alert("Winner Winner Chicken Dinner!");
+        document.getElementById("restartButton").style.display = "block";
+    }
+}
+
 resizeCanvas();
 spawnGhosts();
-spawnPacman(); // Call spawnPacman at the start of the game
+spawnPacman(); 
 pacman.startX = pacman.x;
 pacman.startY = pacman.y;
+
+pacman.direction = "right";
+const initialVector = getVectorForDirection(pacman.direction);
+pacman.dx = initialVector.dx;
+pacman.dy = initialVector.dy;
+
+initializePellets();
+totalPellets = countTotalPellets();
+
 update();

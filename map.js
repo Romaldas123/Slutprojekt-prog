@@ -76,12 +76,14 @@ function drawPellets() {
     }
 }
 
+
 function eatPelletIfPossible() {
     const col = Math.floor((pacman.x - mapOffsetX) / tileSize);
     const row = Math.floor((pacman.y - mapOffsetY) / tileSize);
     if (row >= 0 && row < mapRows && col >= 0 && col < mapCols && pellets[row][col] !== false) {
         const pelletType = pellets[row][col];
         pellets[row][col] = false;
+        totalPellets--; 
         if (pelletType === "big") {
             if (pacman.boostTimeout) {
                 clearTimeout(pacman.boostTimeout);
@@ -91,12 +93,13 @@ function eatPelletIfPossible() {
             pacman.dx = vector.dx;
             pacman.dy = vector.dy;
             pacman.boostTimeout = setTimeout(() => {
-                pacman.speed = 2.5;
+                pacman.speed = 3;
                 const newVector = getVectorForDirection(pacman.direction);
                 pacman.dx = newVector.dx;
                 pacman.dy = newVector.dy;
                 pacman.boostTimeout = null;
             }, 5000);
         }
+        checkWinCondition(); 
     }
 }
