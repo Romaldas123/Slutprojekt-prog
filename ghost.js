@@ -1,4 +1,3 @@
-// Ghost definitions and logic
 const ghostColors = {
     pinky: "pink"
 };
@@ -19,14 +18,16 @@ const ghostSpawns = [ghostHouse[0]];
 
 const ghosts = [
     {
-        name: "pinky",
-        color: ghostColors.pinky,
-        row: ghostSpawns[0].row,
-        col: ghostSpawns[0].col,
-        x: 0, y: 0, dx: 0, dy: 0,
-        speed: 2.8,
-        direction: "up"
-    }
+    name: "pinky",
+    color: ghostColors.pinky,
+    row: ghostSpawns[0].row,
+    col: ghostSpawns[0].col,
+    x: 0, y: 0,
+    startX: 0, startY: 0,   // <--- ADD
+    dx: 0, dy: 0,
+    speed: 2.8,
+    direction: "up"
+}
 ];
 
 // Place ghosts at spawn tile centers
@@ -34,6 +35,8 @@ function spawnGhosts() {
     for (const g of ghosts) {
         g.x = mapOffsetX + g.col * tileSize + tileSize/2;
         g.y = mapOffsetY + g.row * tileSize + tileSize/2;
+        g.startX = g.x;
+        g.startY = g.y;
         g.dx = 0;
         g.dy = 0;
     }

@@ -6,7 +6,9 @@ let pacman = {
     dx: 0,
     dy: 0,
     direction: "right",
-    requestedDirection: null
+    requestedDirection: null,
+    startX: 0,  // Add startX
+    startY: 0   // Add startY
 };
 
 function getVectorForDirection(direction) {
